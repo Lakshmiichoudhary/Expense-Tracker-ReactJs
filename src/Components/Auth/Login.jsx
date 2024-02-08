@@ -1,5 +1,8 @@
 import { useRef, useState } from 'react'
 import Validation from './Validation'
+import { auth } from '../../Utils/Firebase'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
     const[isLogin,setIsLogin] = useState(true)
@@ -7,17 +10,52 @@ const Login = () => {
     const email = useRef(null)
     const password = useRef(null)
     const confirmPassword = useRef(null)
+    const navigate = useNavigate()
 
     const handleButtonClick = () => {
-        console.log(email.current.value)
-        console.log(password.current.value)
-        console.log(confirmPassword.current.value)
-        const message = Validation(
-            email.current.value,
-            password.current.value,
-            confirmPassword.current.value)
-        setErrorMessage(message)    
-        console.log(message)    
+        const emailValue = email.current ? email.current.value : '';
+        const passwordValue = password.current ? password.current.value : '';
+        const confirmPasswordValue = confirmPassword.current ? confirmPassword.current.value : '';
+            const message = Validation(
+                emailValue,
+                passwordValue,
+                confirmPasswordValue)
+            setErrorMessage(message)
+        if (message) return
+    
+        if (!isLogin) {
+            createUserWithEmailAndPassword(auth,
+                email.current.value,
+                password.current.value)
+                .then((userCredential) => {              
+                    const user = userCredential.user;
+                    navigate("/expense") 
+
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    setErrorMessage(errorCode + "/" + errorMessage);
+                });
+        } else {
+            signInWithEmailAndPassword(auth,
+                email.current.value,
+                password.current.value)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    navigate("/expense")
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    setErrorMessage(errorCode + "/" + errorMessage);
+                });
+        } 
+    }
+    
+    const toggle = () => {
+        setIsLogin(!isLogin)
+        setErrorMessage("")
     }
 
   return (
@@ -26,7 +64,8 @@ const Login = () => {
       <form 
         onSubmit={(e)=>e.preventDefault()}
         className='p-4 mt-12 w-3/12 mx-auto left-0 right-0 bg-slate-950 text-center rounded-lg'>
-        <h1 className='p-2 font-bold text-white'>Sign Up</h1>
+        <h1 className='p-2 font-bold text-white'>
+            {!isLogin ? "Sign Up" :"Sign In"}</h1>
         <div>
             <input className='p-3 m-3 rounded-md'
             ref={email}
@@ -39,19 +78,20 @@ const Login = () => {
             type='password'
             placeholder='Password' />
         </div>
-        <div>
+        {!isLogin && <div>
             <input className='p-3 m-3 rounded-md'
             ref={confirmPassword}
             type='password'
             placeholder='Confirm Password' />
-        </div>
+        </div>}
         <p className='p-2 text-red-600'>{errormessage}</p>
         <button className='p-3 m-3 px-7 rounded-full bg-green-700 hover:bg-green-900 text-white'
             onClick={handleButtonClick}>
-            Sign Up
+             {!isLogin ? "Sign Up" :"Sign In"}
         </button>
-        <p className='p-2 text-white cursor-pointer'>
-            Have an account? Sign In
+        <p className='p-2 text-white cursor-pointer'
+        onClick={toggle}>
+           {!isLogin ? "Have an account? Sign In" : "Dont have an account? signUp"}
         </p>
       </form>
     </div>
