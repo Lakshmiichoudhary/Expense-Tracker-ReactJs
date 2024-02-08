@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Login from './Auth/Login'
 import Expense from './Expense'
 import {RouterProvider, createBrowserRouter} from 'react-router-dom'
@@ -6,9 +6,13 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../Utils/Firebase'
 import { useDispatch } from 'react-redux'
 import { addAuth, removeAuth } from '../Store/AuthSlice'
+import Profile from './Profile/Profile'
 
 const Body = () => {
   const dispatch = useDispatch()
+  const [isProfileComplete, setIsProfileComplete] = useState(false);
+  const [userDisplayName, setUserDisplayName] = useState('');
+
 
   const appRouter = createBrowserRouter([
     {
@@ -17,7 +21,11 @@ const Body = () => {
     },
     {
       path: "/expense",
-      element: <Expense/>
+      element: <Expense isProfileComplete={isProfileComplete} userDisplayName={userDisplayName}/>
+    },
+    {
+      path: "/profile",
+      element: <Profile setIsProfileComplete={setIsProfileComplete} setUserDisplayName={setUserDisplayName}/>
     }
 
     ])
@@ -25,8 +33,8 @@ const Body = () => {
     useEffect(()=>{
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          const {uid,email,password} = user;
-          dispatch(addAuth({uid:uid,email:email,password:password}))
+          dispatch(addAuth(user));
+          setIsProfileComplete(isProfileComplete(user));
         } else {
           dispatch(removeAuth())
         }
