@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import Validation from './Validation'
 import { auth } from '../../Utils/Firebase'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from 'firebase/auth'
 import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
@@ -29,6 +29,8 @@ const Login = () => {
                 password.current.value)
                 .then((userCredential) => {              
                     const user = userCredential.user;
+                    sendVerificationEmail(user);
+                    alert('email verification link sent')
                     navigate("/expense") 
 
                 })
@@ -52,6 +54,18 @@ const Login = () => {
                 });
         } 
     }
+
+    const sendVerificationEmail = (user) => {
+        sendEmailVerification(user)
+            .then(() => {
+                console.log("Verification email sent successfully.");
+            })
+            .catch((error) => {
+                console.error("Error sending verification email:", error);
+                setErrorMessage("Error sending verification email. Please try again later.");
+        });
+    }
+
     
     const toggle = () => {
         setIsLogin(!isLogin)
@@ -90,9 +104,15 @@ const Login = () => {
              {!isLogin ? "Sign Up" :"Sign In"}
         </button>
         <p className='p-2 text-white cursor-pointer'
-        onClick={toggle}>
+            onClick={toggle}>
            {!isLogin ? "Have an account? Sign In" : "Dont have an account? signUp"}
         </p>
+        {isLogin && auth.currentUser && !auth.currentUser.emailVerified && (
+        <button className='p-3 m-3 rounded-full bg-blue-500 hover:bg-blue-700 text-white'
+            onClick={() => sendVerificationEmail(auth.currentUser)}>
+            Verify Email
+        </button>
+        )}
       </form>
     </div>
   )

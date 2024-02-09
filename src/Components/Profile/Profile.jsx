@@ -1,6 +1,6 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth} from '../../Utils/Firebase';
+import { auth } from '../../Utils/Firebase';
 import { updateProfile } from 'firebase/auth';
 
 const Profile = ({ setUserDisplayName }) => {
@@ -27,7 +27,7 @@ const Profile = ({ setUserDisplayName }) => {
           }).catch((error) => {
             alert('failed to update profile',error)
           });
-    }
+    };
     
     return (
         <div>
@@ -43,6 +43,7 @@ const Profile = ({ setUserDisplayName }) => {
                             type="text"
                             defaultValue={profileData ? profileData.displayName : ''}
                             required
+                            readOnly={!editMode} 
                         />
                     </div>
                     <div>
@@ -53,24 +54,23 @@ const Profile = ({ setUserDisplayName }) => {
                             type="text"
                             defaultValue={profileData ? profileData.photoURL : ''}
                             required
+                            readOnly={!editMode} 
                         />
                     </div>
                     <div className="flex mx-4">
-                    {editMode ? (
-                        <>
-                        <button className="m-2 mt-6 bg-green-700 p-3 rounded-lg" 
-                        onClick={handleUpdate}>
-                            Update
-                        </button>
-                        </>
+                        {editMode ? (
+                            <>
+                                {/* Show the "Update" button only in edit mode */}
+                                <button className="m-2 mt-6 bg-green-700 p-3 rounded-lg" onClick={handleUpdate}>
+                                    Update
+                                </button>
+                            </>
                         ) : (
-                        <button className="m-2 mt-6 bg-blue-700 p-3 rounded-lg" 
-                        onClick={handleEdit}>
-                            Edit
-                        </button>
-                        )}  
-                        <button className="m-2 mt-6 p-3 border-2 border-red-800 text-red-800 rounded-lg" 
-                        onClick={handleCancel}>
+                            <button className="m-2 mt-6 bg-blue-700 p-3 rounded-lg" onClick={handleEdit}>
+                                Edit
+                            </button>
+                        )}
+                        <button className="m-2 mt-6 p-3 border-2 border-red-800 text-red-800 rounded-lg" onClick={handleCancel}>
                             Cancel
                         </button>
                     </div>
