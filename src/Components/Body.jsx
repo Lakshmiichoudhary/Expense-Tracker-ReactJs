@@ -25,7 +25,7 @@ const Body = () => {
     },
     {
       path: "/profile",
-      element: <Profile setIsProfileComplete={setIsProfileComplete} setUserDisplayName={setUserDisplayName}/>
+      element: <Profile setUserDisplayName={setUserDisplayName}/>
     }
 
     ])
@@ -33,8 +33,10 @@ const Body = () => {
     useEffect(()=>{
       onAuthStateChanged(auth, (user) => {
         if (user) {
-          dispatch(addAuth(user));
-          setIsProfileComplete(isProfileComplete(user));
+          const {uid,email,displayName,photoURL} = user;
+          dispatch(addAuth({uid:uid , email: email , displayName: displayName,photoURL:photoURL}));
+            setIsProfileComplete(!!displayName);
+            setUserDisplayName(displayName);
         } else {
           dispatch(removeAuth())
         }
