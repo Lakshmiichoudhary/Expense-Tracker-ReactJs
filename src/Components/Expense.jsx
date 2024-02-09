@@ -2,6 +2,7 @@ import { signOut } from 'firebase/auth'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { auth } from '../Utils/Firebase'
+import ExpenseForm from './Expenses/ExpenseForm'
 
 const Expense = ({isProfileComplete,userDisplayName}) => {
   const navigate = useNavigate()
@@ -26,6 +27,7 @@ const Expense = ({isProfileComplete,userDisplayName}) => {
   }
 
   return (
+    <div>
     <div className='flex justify-between p-6 text-white bg-slate-950'>
       <h1>Welcome To Expense Tracker</h1>
       {isProfileComplete ? (
@@ -48,6 +50,10 @@ const Expense = ({isProfileComplete,userDisplayName}) => {
           </p>
         </div>
       )}
+      </div>
+      <div>
+        <ExpenseForm />
+      </div>
     </div>
   )
 }
