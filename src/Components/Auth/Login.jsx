@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import Validation from './Validation'
 import { auth } from '../../Utils/Firebase'
 import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from 'firebase/auth'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Login = () => {
     const[isLogin,setIsLogin] = useState(true)
@@ -99,6 +99,9 @@ const Login = () => {
             placeholder='Confirm Password' />
         </div>}
         <p className='p-2 text-red-600'>{errormessage}</p>
+        {isLogin && <div className='p-2 text-red-600'>
+            <Link to='/resetPassword'>Forget Password?</Link>
+        </div>}
         <button className='p-3 m-3 px-7 rounded-full bg-green-700 hover:bg-green-900 text-white'
             onClick={handleButtonClick}>
              {!isLogin ? "Sign Up" :"Sign In"}

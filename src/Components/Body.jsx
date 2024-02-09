@@ -7,6 +7,7 @@ import { auth } from '../Utils/Firebase'
 import { useDispatch } from 'react-redux'
 import { addAuth, removeAuth } from '../Store/AuthSlice'
 import Profile from './Profile/Profile'
+import ForgetPassword from './Auth/ForgetPassword'
 
 const Body = () => {
   const dispatch = useDispatch()
@@ -26,6 +27,10 @@ const Body = () => {
     {
       path: "/profile",
       element: <Profile setUserDisplayName={setUserDisplayName}/>
+    },
+    {
+      path: "/resetPassword",
+      element: <ForgetPassword />
     }
 
     ])
