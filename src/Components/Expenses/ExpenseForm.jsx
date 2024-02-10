@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import ExpenseItem from './ExpenseItem';
 import { db } from '../../Utils/Firebase';
-import { getDocs, addDoc, collection } from '@firebase/firestore'
+import { getDocs, doc, addDoc, collection, deleteDoc, updateDoc } from '@firebase/firestore'
 
 const ExpenseForm = () => {
     const [moneySpent, setMoneySpent] = useState("");
     const [description, setDescription] = useState("");
     const [category, setCategory] = useState("");
     const [expenses, setExpenses] = useState([]);
+    const [id,setId] = useState("")
+    const [show,setShow] = useState(false) 
 
     const value = collection(db,"expense")
 
@@ -17,10 +19,9 @@ const ExpenseForm = () => {
             setExpenses(dbval.docs.map(doc => ({...doc.data(),id:doc.id})))
         }
         getData()
-    },[])
+    },[value])
 
-    const handleExpense = async (e) => {
-        e.preventDefault()
+    const handleExpense = async () => {
         await addDoc(value,{
             moneySpent:moneySpent,
             description: description,
@@ -31,10 +32,37 @@ const ExpenseForm = () => {
         setDescription("")
         setCategory("")
     }
+
+    const handleDelete = async(id) => {
+        const deleteData = doc(db,'expense',id)
+        await deleteDoc(deleteData)
+    }
+
+    const handleEdit = async (id,moneySpent,description,category) => {
+        setMoneySpent(moneySpent)
+        setDescription(description)
+        setCategory(category)
+        setId(id)
+        setShow(true)
+    }
+
+    const handleUpdate = async() => {
+        const updateData = doc(db,"expense",id)
+        await updateDoc(updateData,{
+            moneySpent:moneySpent,
+            description:description,
+            category:category
+        })
+        setShow(false)
+        setMoneySpent("")
+        setDescription("")
+        setCategory("")
+        setId("")    
+    }
   
   return (
     <div>
-        <form onSubmit={handleExpense}
+        <form onSubmit={(e) => e.preventDefault()}
             className='flex justify-evenly bg-slate-900 h-32 text-white mx-10 p-4 rounded-full mt-7'>
         <div>
             <label>Amount Spent</label>
@@ -66,13 +94,19 @@ const ExpenseForm = () => {
         </select>
         </div>
         <div>
-        <button className='p-3 mt-5 rounded-lg bg-emerald-600 hover:bg-emerald-800 '
-        type='submit'>
+        {!show ? (<button className='p-3 mt-5 rounded-lg bg-emerald-600 hover:bg-emerald-800 '
+         onClick={handleExpense}>
             Add Expense
-        </button>
+        </button>) :(
+        <button className='p-3 mt-5 rounded-lg bg-emerald-600 hover:bg-emerald-800 '
+         onClick={handleUpdate}>
+            update
+        </button>)}
         </div>
         </form>
-        <ExpenseItem expenses={expenses} />
+        <ExpenseItem expenses={expenses} 
+            deleteData={handleDelete}
+            EditData={handleEdit} />
     </div>
   )
 }
