@@ -110,7 +110,7 @@ const Login = () => {
             onClick={toggle}>
            {!isLogin ? "Have an account? Sign In" : "Dont have an account? signUp"}
         </p>
-        {isLogin && auth.currentUser && !auth.currentUser.emailVerified && (
+        {!isLogin && auth.currentUser && !auth.currentUser.emailVerified && (
         <button className='p-3 m-3 rounded-full bg-blue-500 hover:bg-blue-700 text-white'
             onClick={() => sendVerificationEmail(auth.currentUser)}>
             Verify Email

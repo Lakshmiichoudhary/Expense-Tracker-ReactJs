@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ExpenseItem from './ExpenseItem';
+import { db } from '../../Utils/Firebase';
+import { getDocs, addDoc, collection } from '@firebase/firestore'
 
 const ExpenseForm = () => {
     const [moneySpent, setMoneySpent] = useState("");
@@ -7,16 +9,23 @@ const ExpenseForm = () => {
     const [category, setCategory] = useState("");
     const [expenses, setExpenses] = useState([]);
 
-    const handleExpense = (e) => {
-        e.preventDefault()
+    const value = collection(db,"expense")
 
-        const newExpense ={
-        moneySpent,
-        description,
-        category
+    useEffect(() => {
+        const getData = async () => {
+        const dbval =  await getDocs(value)
+            setExpenses(dbval.docs.map(doc => ({...doc.data(),id:doc.id})))
         }
+        getData()
+    },[])
 
-        setExpenses([...expenses,newExpense])
+    const handleExpense = async (e) => {
+        e.preventDefault()
+        await addDoc(value,{
+            moneySpent:moneySpent,
+            description: description,
+            category:category
+        })
 
         setMoneySpent("")
         setDescription("")
