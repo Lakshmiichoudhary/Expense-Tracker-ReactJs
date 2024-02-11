@@ -3,6 +3,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { auth } from '../Utils/Firebase'
 import ExpenseForm from './Expenses/ExpenseForm'
+import PremiumButton from './Expenses/PremiumButton'
 
 const Expense = ({isProfileComplete,userDisplayName}) => {
   const navigate = useNavigate()
@@ -36,6 +37,7 @@ const Expense = ({isProfileComplete,userDisplayName}) => {
              onClick={handleEditProfile}>
               {userDisplayName}!
         </h1>
+        <PremiumButton />
         <div>
             <button className='mx-8 bg-blue-500 px-2 py-1 rounded-lg hover:bg-sky-800'
             onClick={handleLogout}>

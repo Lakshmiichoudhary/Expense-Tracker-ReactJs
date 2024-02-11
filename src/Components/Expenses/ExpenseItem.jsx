@@ -2,7 +2,7 @@ import React from 'react'
 
 const ExpenseItem = ({expenses,deleteData,EditData}) => {
   return (
-    <div className='p-2 text-center mt-5 bg-slate-700 mx-40 text-white'>
+    <div className='p-2 text-center mt-5 bg-slate-700 mx-40 text-white rounded-lg'>
         <h2 className='text-2xl font-sans m-2'>Your Expense</h2>
         {expenses.length === 0 ? (
             <p className='p-2 m-4 text-amber-300 font-bold'>

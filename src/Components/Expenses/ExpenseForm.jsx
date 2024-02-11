@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import ExpenseItem from './ExpenseItem';
-import { db } from '../../Utils/Firebase';
+import { auth, db } from '../../Utils/Firebase';
 import { getDocs, doc, addDoc, collection, deleteDoc, updateDoc } from '@firebase/firestore'
+import { useDispatch } from 'react-redux';
+import { addExpense } from '../../Store/ExpenseSlice';
+import PremiumButton from './PremiumButton';
 
 const ExpenseForm = () => {
     const [moneySpent, setMoneySpent] = useState("");
@@ -10,28 +13,45 @@ const ExpenseForm = () => {
     const [expenses, setExpenses] = useState([]);
     const [id,setId] = useState("")
     const [show,setShow] = useState(false) 
+    const dispatch = useDispatch()
 
     const value = collection(db,"expense")
 
     useEffect(() => {
         const getData = async () => {
-        const dbval =  await getDocs(value)
-            setExpenses(dbval.docs.map(doc => ({...doc.data(),id:doc.id})))
+
+            const userId = auth.currentUser.uid;
+
+            const querySnapshot = await getDocs(value);
+
+            const userExpenses = querySnapshot.docs
+                .filter(doc => doc.data().userId === userId)
+                .map(doc => ({ ...doc.data(), id: doc.id }));
+    
+            setExpenses(userExpenses);
         }
         getData()
     },[value])
 
     const handleExpense = async () => {
-        await addDoc(value,{
-            moneySpent:moneySpent,
+        const userId = auth.currentUser.uid;
+    
+        const expenseData = {
+            userId: userId,
+            moneySpent: moneySpent,
             description: description,
-            category:category
-        })
-
-        setMoneySpent("")
-        setDescription("")
-        setCategory("")
-    }
+            category: category
+        };
+    
+        dispatch(addExpense(expenseData));
+    
+        await addDoc(value, expenseData);
+    
+        setMoneySpent("");
+        setDescription("");
+        setCategory("");
+    };
+    
 
     const handleDelete = async(id) => {
         const deleteData = doc(db,'expense',id)
