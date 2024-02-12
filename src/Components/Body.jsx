@@ -4,7 +4,7 @@ import Expense from './Expense'
 import {RouterProvider, createBrowserRouter} from 'react-router-dom'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from '../Utils/Firebase'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { addAuth, removeAuth } from '../Store/AuthSlice'
 import Profile from './Profile/Profile'
 import ForgetPassword from './Auth/ForgetPassword'
@@ -13,7 +13,7 @@ const Body = () => {
   const dispatch = useDispatch()
   const [isProfileComplete, setIsProfileComplete] = useState(false);
   const [userDisplayName, setUserDisplayName] = useState('');
-
+  const isDarkTheme = useSelector((state) => state.theme.darkMode);
 
   const appRouter = createBrowserRouter([
     {
@@ -50,7 +50,7 @@ const Body = () => {
     },[])
 
   return (
-    <div>
+    <div className={`h-screen ${isDarkTheme ? "bg-white text-gray-800" : " bg-gray-800 text-black"}`}>
       <RouterProvider router={appRouter} />
     </div>
   )

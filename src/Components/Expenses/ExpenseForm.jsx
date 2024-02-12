@@ -19,19 +19,18 @@ const ExpenseForm = () => {
 
     useEffect(() => {
         const getData = async () => {
-
-            const userId = auth.currentUser.uid;
-
-            const querySnapshot = await getDocs(value);
-
-            const userExpenses = querySnapshot.docs
-                .filter(doc => doc.data().userId === userId)
-                .map(doc => ({ ...doc.data(), id: doc.id }));
-    
-            setExpenses(userExpenses);
+            const user = auth.currentUser;
+            if (user) {
+                const userId = user.uid;
+                const querySnapshot = await getDocs(value);
+                const userExpenses = querySnapshot.docs
+                    .filter(doc => doc.data().userId === userId)
+                    .map(doc => ({ ...doc.data(), id: doc.id }));
+                setExpenses(userExpenses);
+            }
         }
-        getData()
-    },[value])
+        getData();
+    }, [value]);
 
     const handleExpense = async () => {
         const userId = auth.currentUser.uid;

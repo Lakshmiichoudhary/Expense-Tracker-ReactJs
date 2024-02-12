@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../Utils/Firebase';
 import { updateProfile } from 'firebase/auth';
@@ -7,8 +7,12 @@ const Profile = ({ setUserDisplayName }) => {
     const navigate = useNavigate();
     const name = useRef();
     const photoUrl = useRef();
-    const [profileData, setProfileData] = useState(null);
-    const [editMode, setEditMode] = useState(false);
+    const [editMode, setEditMode] = useState(true);
+    const [currentUser, setCurrentUser] = useState(null);
+
+    useEffect(() => {
+        setCurrentUser(auth.currentUser);
+    }, []);
 
     const handleCancel = () => {
         navigate('/expense');
@@ -20,13 +24,15 @@ const Profile = ({ setUserDisplayName }) => {
 
     const handleUpdate = () => {
         updateProfile(auth.currentUser, {
-            displayName: name.current.value, photoURL: photoUrl.current.value
-          }).then(() => {
+            displayName: name.current.value,
+            photoURL: photoUrl.current.value
+        }).then(() => {
             setUserDisplayName(name.current.value);
-            navigate('/expense')
-          }).catch((error) => {
-            alert('failed to update profile',error)
-          });
+            setEditMode(false); 
+            navigate('/expense');
+        }).catch((error) => {
+            alert('Failed to update profile: ' + error.message);
+        });
     };
     
     return (
@@ -41,9 +47,9 @@ const Profile = ({ setUserDisplayName }) => {
                             className="p-2 m-4 rounded-md text-black"
                             ref={name}
                             type="text"
-                            defaultValue={profileData ? profileData.displayName : ''}
+                            defaultValue={currentUser ? currentUser.displayName : ''}
                             required
-                            readOnly={!editMode} 
+                            readOnly={!editMode}
                         />
                     </div>
                     <div>
@@ -52,19 +58,16 @@ const Profile = ({ setUserDisplayName }) => {
                             className="p-2 m-4 rounded-md text-black"
                             ref={photoUrl}
                             type="text"
-                            defaultValue={profileData ? profileData.photoURL : ''}
+                            defaultValue={currentUser ? currentUser.photoURL : ''}
                             required
-                            readOnly={!editMode} 
+                            readOnly={!editMode}
                         />
                     </div>
                     <div className="flex mx-4">
                         {editMode ? (
-                            <>
-                                {/* Show the "Update" button only in edit mode */}
-                                <button className="m-2 mt-6 bg-green-700 p-3 rounded-lg" onClick={handleUpdate}>
-                                    Update
-                                </button>
-                            </>
+                            <button className="m-2 mt-6 bg-green-700 p-3 rounded-lg" onClick={handleUpdate}>
+                                Update
+                            </button>
                         ) : (
                             <button className="m-2 mt-6 bg-blue-700 p-3 rounded-lg" onClick={handleEdit}>
                                 Edit
