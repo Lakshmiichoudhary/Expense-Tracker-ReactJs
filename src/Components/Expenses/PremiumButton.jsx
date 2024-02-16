@@ -44,13 +44,13 @@ const PremiumButton = ({ expenses }) => {
     window.URL.revokeObjectURL(url);
   };
 
-  return !isPremiumActivated && totalAmount > 10000 && (
-    <div>
-      <button className='ml-6 p-2 bg-white text-black hover:bg-slate-400 rounded-lg ' 
+  return !isPremiumActivated && totalAmount >= 10000 && (
+    <div className='md:flex md:mt-2'>
+      <button className='md:ml-6 p-2 bg-white text-black hover:bg-slate-400 rounded-lg ' 
         onClick={handleActivatePremium}>
         Premium
       </button>
-      <button className='ml-6 p-2 bg-green-700 rounded-lg' onClick={handleDownload}>
+      <button className='md:ml-6 p-2 bg-green-700 rounded-lg' onClick={handleDownload}>
         Download
       </button>
     </div>

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Validation from './Validation'
 import { auth } from '../../Utils/Firebase'
 import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from 'firebase/auth'
@@ -74,10 +74,12 @@ const Login = () => {
 
   return (
     <div>
-        <h1 className='p-6 text-white text-center text-2xl font-bold bg-gray-950'>Expense Tracker</h1>
+        <h1 className='p-6 text-white text-center text-2xl font-bold bg-gray-950'>
+            Expense Tracker
+        </h1>
       <form 
         onSubmit={(e)=>e.preventDefault()}
-        className='p-4 mt-12 w-3/12 mx-auto left-0 right-0 bg-slate-950 text-center rounded-lg'>
+        className='md:p-4 mt-12  md:w-3/12 mx-4 md:mx-auto md:left-0 md:right-0 bg-slate-950 text-center rounded-lg'>
         <h1 className='p-2 font-bold text-white'>
             {!isLogin ? "Sign Up" :"Sign In"}</h1>
         <div>

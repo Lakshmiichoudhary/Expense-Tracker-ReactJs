@@ -4,7 +4,6 @@ import { auth, db } from '../../Utils/Firebase';
 import { getDocs, doc, addDoc, collection, deleteDoc, updateDoc } from '@firebase/firestore'
 import { useDispatch } from 'react-redux';
 import { addExpense } from '../../Store/ExpenseSlice';
-import PremiumButton from './PremiumButton';
 
 const ExpenseForm = () => {
     const [moneySpent, setMoneySpent] = useState("");
@@ -82,10 +81,10 @@ const ExpenseForm = () => {
   return (
     <div>
         <form onSubmit={(e) => e.preventDefault()}
-            className='flex justify-evenly bg-slate-900 h-32 text-white mx-10 p-4 rounded-full mt-7'>
+            className='md:flex justify-evenly bg-slate-900 md:h-32 text-white mx-2 md:mx-10 p-4 md:rounded-full mt-7'>
         <div>
             <label>Amount Spent</label>
-            <input className='p-2 m-6 rounded-lg text-black'
+            <input className='p-2 m-2 md:m-6 rounded-lg text-black'
                 type='number'
                 value={moneySpent}
                 onChange={(e) => setMoneySpent(e.target.value)}
@@ -93,7 +92,7 @@ const ExpenseForm = () => {
         </div>
         <div>
             <label>Description</label>
-            <input className='p-2 m-6 rounded-lg text-black'
+            <input className='p-2 m-2 md:m-6 rounded-lg text-black'
                 type='text'
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -101,7 +100,7 @@ const ExpenseForm = () => {
         </div>
         <div>
         <label>Category</label>   
-        <select className='p-2 m-6 rounded-lg text-black'
+        <select className='p-2 m-2 md:m-6 rounded-lg text-black'
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             required>
